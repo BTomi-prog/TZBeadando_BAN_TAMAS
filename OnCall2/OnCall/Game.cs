@@ -13,6 +13,13 @@ namespace OnCall
             Console.WriteLine();
 
             // TODO: a játék főciklusa (K1-K6)
+            Console.WriteLine("Add meg a neved:");
+            string name = Console.ReadLine();
+            while (name == string.Empty)
+            {
+                Console.WriteLine("Add meg a neved:");
+                name = Console.ReadLine();
+            }
 
             Console.WriteLine("Nyomj meg egy billentyűt a kilépéshez.");
             Console.ReadKey(true);
