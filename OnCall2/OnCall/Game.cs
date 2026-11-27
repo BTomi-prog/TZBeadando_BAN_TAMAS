@@ -18,7 +18,7 @@ namespace OnCall
             Admin admin = new Admin(ui.ReadName());
             Random random = new Random();
             List<Ticket> tickets = new List<Ticket>();
-            int time = 0;  
+            int time = 0;   
             bool running = true;
 
             while (running && time < GameTime.WeekEnd)
@@ -42,11 +42,35 @@ namespace OnCall
 
                 if (choice == sorted.Count + 2)
                 {
-                    running = false;  
+                    
+                    ui.ShowMessage(Texts.QuitText);
+                    running = false;
+                }
+                else if (choice == sorted.Count + 1)
+                {
+                    
+                    ui.ShowMessage(Texts.CoffeeTexts[random.Next(Texts.CoffeeTexts.Length)]);
+                    time++;
                 }
                 else
                 {
-                    time++;   
+                    
+                    Ticket ticket = sorted[choice - 1];
+                    ticket.Work();
+
+                    if (ticket.IsClosed)
+                    {
+                        admin.ChangeSatisfaction(ticket.Reward);
+                        tickets.Remove(ticket);
+                        ui.ShowMessage(Texts.DoneTexts[random.Next(Texts.DoneTexts.Length)] +
+                                       " +" + ticket.Reward + " elégedettség");
+                    }
+                    else
+                    {
+                        ui.ShowMessage(Texts.WorkTexts[random.Next(Texts.WorkTexts.Length)] +
+                                       " Még " + ticket.RemainingWork + " óra munka van vele.");
+                    }
+                    time++;
                 }
             }
 
