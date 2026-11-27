@@ -60,5 +60,48 @@ namespace OnCall.Tests
 
             Assert.AreEqual(0, penalty);
         }
+        [TestMethod]
+        public void GetRating_Satisfaction70_IsExcellent()
+        {
+            Assert.AreEqual(Texts.RatingExcellent, EndRules.GetRating(70));
+        }
+
+        [TestMethod]
+        public void GetRating_Satisfaction69_IsPassed()
+        {
+            Assert.AreEqual(Texts.RatingPassed, EndRules.GetRating(69));
+        }
+
+        [TestMethod]
+        public void GetRating_Satisfaction39_IsProbation()
+        {
+            Assert.AreEqual(Texts.RatingProbation, EndRules.GetRating(39));
+        }
+
+        [TestMethod]
+        public void ChangeSatisfaction_BelowZero_StopsAtZero()
+        {
+            Admin admin = new Admin("Teszt");
+
+            admin.ChangeSatisfaction(-200);
+
+            Assert.AreEqual(0, admin.Satisfaction);
+        }
+
+        [TestMethod]
+        public void RecordExpired_SameTicketTwice_CountedOnce()
+        {
+            GameStats stats = new GameStats();
+            List<Ticket> tickets = new List<Ticket>
+    {
+        new Ticket("Nem nyomtat a nyomtató", 1, 2, 6, 2, 2)
+    };
+
+            stats.RecordExpired(tickets, 6);
+            stats.RecordExpired(tickets, 7);
+
+            Assert.AreEqual(1, stats.Expired[1]);
+        }
+
     }
 }

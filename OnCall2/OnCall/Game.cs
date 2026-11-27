@@ -16,10 +16,13 @@ namespace OnCall
 
             ConsoleUI ui = new ConsoleUI();
             Admin admin = new Admin(ui.ReadName());
+            GameStats stats = new GameStats();
             Random random = new Random();
             List<Ticket> tickets = new List<Ticket>();
-            int time = 0;   // hétfő 8:00
+            int time = 0;   
             bool running = true;
+            bool quit = false;
+            bool fired = false;
 
             while (running && time < GameTime.WeekEnd)
             {
@@ -44,13 +47,13 @@ namespace OnCall
 
                 if (choice == sorted.Count + 2)
                 {
-                    
-                    ui.ShowMessage(Texts.QuitText);
+                   
+                    quit = true;
                     running = false;
                 }
                 else if (choice == sorted.Count + 1)
                 {
-                   
+                    
                     ui.ShowMessage(Texts.CoffeeTexts[random.Next(Texts.CoffeeTexts.Length)]);
                     hourPassed = true;
                 }
@@ -63,6 +66,7 @@ namespace OnCall
                     if (ticket.IsClosed)
                     {
                         admin.ChangeSatisfaction(ticket.Reward);
+                        stats.RecordClosed(ticket);
                         tickets.Remove(ticket);
                         ui.ShowMessage(Texts.DoneTexts[random.Next(Texts.DoneTexts.Length)] +
                                        " +" + ticket.Reward + " elégedettség");
@@ -78,6 +82,8 @@ namespace OnCall
                 if (hourPassed)
                 {
                     
+                    stats.RecordExpired(tickets, time);
+
                     int penalty = DeadlineRules.CalculatePenalty(tickets, time);
                     if (penalty > 0)
                     {
@@ -85,9 +91,34 @@ namespace OnCall
                         ui.ShowMessage(Texts.LateTexts[random.Next(Texts.LateTexts.Length)] +
                                        " -" + penalty + " elégedettség");
                     }
+
+                    
+                    if (admin.Satisfaction == 0)
+                    {
+                        fired = true;
+                        running = false;
+                    }
+
                     time++;
                 }
             }
+
+            
+            Console.WriteLine();
+            if (fired)
+            {
+                ui.ShowMessage(Texts.Fired);
+            }
+            else if (quit)
+            {
+                ui.ShowMessage(Texts.QuitText);
+            }
+            else
+            {
+                ui.ShowMessage(EndRules.GetRating(admin.Satisfaction));
+            }
+
+            ui.ShowSummary(admin, stats);
 
             Console.WriteLine("Nyomj meg egy billentyűt a kilépéshez.");
             Console.ReadKey(true);

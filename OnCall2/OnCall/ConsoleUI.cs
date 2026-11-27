@@ -68,6 +68,20 @@ namespace OnCall
             Console.WriteLine(text);
         }
 
+        public void ShowSummary(Admin admin, GameStats stats)
+        {
+            Console.WriteLine();
+            Console.WriteLine("--- Összegzés ---");
+            Console.WriteLine("Elégedettség: " + admin.Satisfaction + "/100");
+
+            for (int priority = 0; priority < stats.Closed.Length; priority++)
+            {
+                Console.WriteLine(Ticket.NameOf(priority).PadRight(10) +
+                                  " lezárt: " + stats.Closed[priority] +
+                                  ", lejárt: " + stats.Expired[priority]);
+            }
+        }
+
         public void ShowNewTicket(Ticket ticket)
         {
             Console.WriteLine();

@@ -15,7 +15,9 @@ namespace OnCall
         public int Reward { get; }
         public int Penalty { get; }
 
-        
+        public bool ExpiredCounted { get; set; }
+
+
         public bool IsClosed
         {
             get { return RemainingWork <= 0; }
@@ -46,21 +48,26 @@ namespace OnCall
             return Deadline <= time;
         }
 
-        public string PriorityName()
+        public static string NameOf(int priority)
         {
-            if (Priority == 0)
+            if (priority == 0)
             {
                 return "Alacsony";
             }
-            if (Priority == 1)
+            if (priority == 1)
             {
                 return "Normál";
             }
-            if (Priority == 2)
+            if (priority == 2)
             {
                 return "Magas";
             }
             return "Kritikus";
+        }
+
+        public string PriorityName()
+        {
+            return NameOf(Priority);
         }
     }
 }
