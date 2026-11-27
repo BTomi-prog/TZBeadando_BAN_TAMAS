@@ -8,14 +8,30 @@ namespace OnCall
 {
     internal class Admin
     {
-        public string Name { get; set; }
+        
+        
+            public string Name { get; }
+            public int Satisfaction { get; private set; }
 
-        public int Satisfaction { get; set; }
+            public Admin(string name, int startSatisfaction = 80)
+            {
+                Name = name;
+                Satisfaction = startSatisfaction;
+            }
 
-        public Admin(string name)
-        {
-            Name = name;
-            Satisfaction = 80;
-        }
+            public void ChangeSatisfaction(int delta)
+            {
+                Satisfaction = Satisfaction + delta;
+
+                if (Satisfaction > 100)
+                {
+                    Satisfaction = 100;
+                }
+                if (Satisfaction < 0)
+                {
+                    Satisfaction = 0;
+                }
+            }
+        
     }
 }
