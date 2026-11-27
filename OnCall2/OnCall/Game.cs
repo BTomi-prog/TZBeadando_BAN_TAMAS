@@ -16,25 +16,39 @@ namespace OnCall
 
             ConsoleUI ui = new ConsoleUI();
             Admin admin = new Admin(ui.ReadName());
+            Random random = new Random();
+            List<Ticket> tickets = new List<Ticket>();
             int time = 0;  
+            bool running = true;
 
-           
-            List<Ticket> tickets = new List<Ticket>
+            while (running && time < GameTime.WeekEnd)
             {
-                new Ticket("Leállt a webshop", 3, 2, 5),
-                new Ticket("Nem megy a második monitor", 1, 2, 8),
-                new Ticket("Recseg a hangszóró", 0, 1, 41),
-            };
+                
+                Ticket newTicket = TicketFactory.TrySpawn(time, random);
+                if (newTicket != null)
+                {
+                    tickets.Add(newTicket);
+                    ui.ShowNewTicket(newTicket);
+                }
 
-            
-            List<Ticket> sorted = tickets
-                .OrderBy(t => t.Deadline)
-                .ThenByDescending(t => t.Priority)
-                .ToList();
+                
+                List<Ticket> sorted = tickets
+                    .OrderBy(t => t.Deadline)
+                    .ThenByDescending(t => t.Priority)
+                    .ToList();
 
-            ui.ShowStatus(admin, time, tickets.Count);
-            int choice = ui.ShowMenu(sorted, time);
-            ui.ShowMessage("Választás: " + choice);
+                ui.ShowStatus(admin, time, tickets.Count);
+                int choice = ui.ShowMenu(sorted, time);
+
+                if (choice == sorted.Count + 2)
+                {
+                    running = false;  
+                }
+                else
+                {
+                    time++;   
+                }
+            }
 
             Console.WriteLine("Nyomj meg egy billentyűt a kilépéshez.");
             Console.ReadKey(true);

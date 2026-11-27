@@ -67,5 +67,11 @@ namespace OnCall
         {
             Console.WriteLine(text);
         }
+
+        public void ShowNewTicket(Ticket ticket)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Új jegy: [" + ticket.PriorityName() + "] " + ticket.Title);
+        }
     }
 }
