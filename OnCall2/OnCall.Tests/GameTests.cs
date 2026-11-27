@@ -31,5 +31,34 @@ namespace OnCall.Tests
 
             Assert.IsTrue(ticket.IsClosed);
         }
+
+        [TestMethod]
+        public void CalculatePenalty_OverdueNormalTicket_ReducesSatisfactionByTwo()
+        {
+            Admin admin = new Admin("Teszt");   
+            List<Ticket> tickets = new List<Ticket>
+    {
+        
+        new Ticket("Nem nyomtat a nyomtató", 1, 2, 6, 2, 2)
+    };
+
+            int penalty = DeadlineRules.CalculatePenalty(tickets, 6);   
+            admin.ChangeSatisfaction(-penalty);
+
+            Assert.AreEqual(78, admin.Satisfaction);
+        }
+
+        [TestMethod]
+        public void CalculatePenalty_NotYetOverdueTicket_NoPenalty()
+        {
+            List<Ticket> tickets = new List<Ticket>
+    {
+        new Ticket("Nem nyomtat a nyomtató", 1, 2, 6, 2, 2)
+    };
+
+            int penalty = DeadlineRules.CalculatePenalty(tickets, 5);  
+
+            Assert.AreEqual(0, penalty);
+        }
     }
 }

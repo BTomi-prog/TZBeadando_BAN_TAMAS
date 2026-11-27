@@ -18,7 +18,7 @@ namespace OnCall
             Admin admin = new Admin(ui.ReadName());
             Random random = new Random();
             List<Ticket> tickets = new List<Ticket>();
-            int time = 0;   
+            int time = 0;   // hétfő 8:00
             bool running = true;
 
             while (running && time < GameTime.WeekEnd)
@@ -40,6 +40,8 @@ namespace OnCall
                 ui.ShowStatus(admin, time, tickets.Count);
                 int choice = ui.ShowMenu(sorted, time);
 
+                bool hourPassed = false;
+
                 if (choice == sorted.Count + 2)
                 {
                     
@@ -48,9 +50,9 @@ namespace OnCall
                 }
                 else if (choice == sorted.Count + 1)
                 {
-                    
+                   
                     ui.ShowMessage(Texts.CoffeeTexts[random.Next(Texts.CoffeeTexts.Length)]);
-                    time++;
+                    hourPassed = true;
                 }
                 else
                 {
@@ -69,6 +71,19 @@ namespace OnCall
                     {
                         ui.ShowMessage(Texts.WorkTexts[random.Next(Texts.WorkTexts.Length)] +
                                        " Még " + ticket.RemainingWork + " óra munka van vele.");
+                    }
+                    hourPassed = true;
+                }
+
+                if (hourPassed)
+                {
+                    
+                    int penalty = DeadlineRules.CalculatePenalty(tickets, time);
+                    if (penalty > 0)
+                    {
+                        admin.ChangeSatisfaction(-penalty);
+                        ui.ShowMessage(Texts.LateTexts[random.Next(Texts.LateTexts.Length)] +
+                                       " -" + penalty + " elégedettség");
                     }
                     time++;
                 }

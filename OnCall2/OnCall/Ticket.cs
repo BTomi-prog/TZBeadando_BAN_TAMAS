@@ -41,6 +41,11 @@ namespace OnCall
             RemainingWork = RemainingWork - 1;
         }
 
+        public bool IsOverdue(int time)
+        {
+            return Deadline <= time;
+        }
+
         public string PriorityName()
         {
             if (Priority == 0)
